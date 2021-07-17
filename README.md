@@ -9,6 +9,7 @@ Add it in your root build.gradle at the end of repositories:
 		repositories {
 			...
 			maven { url 'https://jitpack.io' }
+			maven { url 'https://developer.huawei.com/repo/' }
 		}
 	}
   
