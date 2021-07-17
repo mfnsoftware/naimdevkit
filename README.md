@@ -47,4 +47,5 @@ Step 2. Add the dependency
 Step 3. Fix Duplicate class error
 	gradle.properties
  
+	android.useAndroidX=true
 	android.enableJetifier=true
