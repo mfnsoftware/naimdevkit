@@ -40,6 +40,7 @@ Step 2. Add the dependency
     		//Rx
     		api "io.reactivex.rxjava3:rxkotlin:3.0.1"
     		api "io.reactivex.rxjava3:rxandroid:3.0.0"
+		
 	}
 
 
