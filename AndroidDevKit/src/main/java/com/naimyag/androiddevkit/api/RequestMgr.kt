@@ -11,6 +11,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import io.reactivex.rxjava3.subscribers.DisposableSubscriber
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
+import retrofit2.HttpException
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -26,7 +27,7 @@ object RequestMgr : ILog {
 
     private val disposable = CompositeDisposable()
 
-    var gson = GsonBuilder()
+    private var gson = GsonBuilder()
         .setLenient()
         .create()
 
@@ -42,7 +43,7 @@ object RequestMgr : ILog {
     internal fun postParamRespJson(
         uri: String,
         paramsMap: HashMap<String, Any>,
-        responseListener: (JsonObject?) -> Unit
+        responseListener: (Result<JsonObject>?) -> Unit
     ) {
         disposable.add(
             api.postParamRespJson(uri, paramsMap).subscribeOn(
@@ -51,12 +52,12 @@ object RequestMgr : ILog {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableSingleObserver<JsonObject>() {
                     override fun onSuccess(t: JsonObject) {
-                        responseListener(t)
+                        responseListener(Result.Success(t))
                     }
 
                     override fun onError(e: Throwable) {
                         printEx("postParamRespJson() ex:", Exception(e))
-                        responseListener(null)
+                        responseListener(Result.Error(e as HttpException))
                     }
                 })
         )
@@ -65,7 +66,7 @@ object RequestMgr : ILog {
     internal fun postParamRespJArray(
         uri: String,
         paramsMap: HashMap<String, Any>,
-        responseListener: (JsonArray?) -> Unit
+        responseListener: (Result<JsonArray>?) -> Unit
     ) {
 
         disposable.add(
@@ -75,12 +76,12 @@ object RequestMgr : ILog {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableSingleObserver<JsonArray>() {
                     override fun onSuccess(t: JsonArray) {
-                        responseListener(t)
+                        responseListener(Result.Success(t))
                     }
 
                     override fun onError(e: Throwable) {
                         printEx("postParamRespJArray() Ex:", Exception(e))
-                        responseListener(null)
+                        responseListener(Result.Error(e as HttpException))
                     }
                 })
         )
@@ -89,7 +90,7 @@ object RequestMgr : ILog {
     internal fun getJson(
         uri: String,
         paramsMap: HashMap<String, Any>?,
-        responseListener: (JsonObject?) -> Unit
+        responseListener: (Result<JsonObject>?) -> Unit
     ) {
         var mUri = uri
         var indx = 0
@@ -111,12 +112,12 @@ object RequestMgr : ILog {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableSingleObserver<JsonObject>() {
                     override fun onSuccess(t: JsonObject) {
-                        responseListener(t)
+                        responseListener(Result.Success(t))
                     }
 
                     override fun onError(e: Throwable) {
                         printEx("getJson() Ex:", Exception(e))
-                        responseListener(null)
+                        responseListener(Result.Error(e as HttpException))
                     }
                 })
         )
@@ -125,7 +126,7 @@ object RequestMgr : ILog {
     internal fun getJArray(
         uri: String,
         paramsMap: HashMap<String, Any>?,
-        responseListener: (JsonArray?) -> Unit
+        responseListener: (Result<JsonArray>?) -> Unit
     ) {
         var mUri = uri
         var indx = 0
@@ -147,12 +148,12 @@ object RequestMgr : ILog {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableSingleObserver<JsonArray>() {
                     override fun onSuccess(t: JsonArray) {
-                        responseListener(t)
+                        responseListener(Result.Success(t))
                     }
 
                     override fun onError(e: Throwable) {
                         printEx("getJson() Ex:", Exception(e))
-                        responseListener(null)
+                        responseListener(Result.Error(e as HttpException))
                     }
                 })
         )
@@ -161,7 +162,7 @@ object RequestMgr : ILog {
     internal fun postParamRespString(
         uri: String,
         paramsMap: HashMap<String, Any>?,
-        responseListener: (String?) -> Unit
+        responseListener: (Result<String>?) -> Unit
     ) {
 
         paramsMap?.let { prms ->
@@ -172,12 +173,12 @@ object RequestMgr : ILog {
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeWith(object : DisposableSingleObserver<String>() {
                         override fun onSuccess(t: String) {
-                            responseListener(t)
+                            responseListener(Result.Success(t))
                         }
 
                         override fun onError(e: Throwable) {
                             printEx("postParamRespString() Ex:", Exception(e))
-                            responseListener(null)
+                            responseListener(Result.Error(e as HttpException))
                         }
                     })
             )
@@ -189,12 +190,12 @@ object RequestMgr : ILog {
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeWith(object : DisposableSingleObserver<String>() {
                         override fun onSuccess(t: String) {
-                            responseListener(t)
+                            responseListener(Result.Success(t))
                         }
 
                         override fun onError(e: Throwable) {
                             printEx("postString() Ex:", Exception(e))
-                            responseListener(null)
+                            responseListener(Result.Error(e as HttpException))
                         }
                     })
             )
@@ -204,7 +205,7 @@ object RequestMgr : ILog {
     internal fun postJsonRespJson(
         uri: String,
         paramsJson: JsonObject,
-        responseListener: (JsonObject?) -> Unit
+        responseListener: (Result<JsonObject>?) -> Unit
     ) {
 
         disposable.add(
@@ -214,12 +215,12 @@ object RequestMgr : ILog {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableSingleObserver<JsonObject>() {
                     override fun onSuccess(t: JsonObject) {
-                        responseListener(t)
+                        responseListener(Result.Success(t))
                     }
 
                     override fun onError(e: Throwable) {
                         printEx("postJsonRespJson() Ex:", Exception(e))
-                        responseListener(null)
+                        responseListener(Result.Error(e as HttpException))
                     }
                 })
         )
@@ -228,7 +229,7 @@ object RequestMgr : ILog {
     internal fun postJsonRespString(
         uri: String,
         paramsJson: JsonObject,
-        responseListener: (String?) -> Unit
+        responseListener: (Result<String>?) -> Unit
     ) {
 
         disposable.add(
@@ -238,12 +239,12 @@ object RequestMgr : ILog {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableSingleObserver<String>() {
                     override fun onSuccess(t: String) {
-                        responseListener(t)
+                        responseListener(Result.Success(t))
                     }
 
                     override fun onError(e: Throwable) {
                         printEx("postJsonRespString() Ex:", Exception(e))
-                        responseListener(null)
+                        responseListener(Result.Error(e as HttpException))
                     }
                 })
         )
@@ -252,7 +253,7 @@ object RequestMgr : ILog {
     internal fun postJsonRespBool(
         uri: String,
         paramsJson: JsonObject,
-        responseListener: (Boolean?) -> Unit
+        responseListener: (Result<Boolean>?) -> Unit
     ) {
 
         disposable.add(
@@ -262,12 +263,12 @@ object RequestMgr : ILog {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableSingleObserver<Boolean>() {
                     override fun onSuccess(t: Boolean) {
-                        responseListener(t)
+                        responseListener(Result.Success(t))
                     }
 
                     override fun onError(e: Throwable) {
                         printEx("postJsonRespBool() Ex:", Exception(e))
-                        responseListener(null)
+                        responseListener(Result.Error(e as HttpException))
                     }
                 })
         )

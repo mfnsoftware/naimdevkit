@@ -18,7 +18,7 @@ object ApiCall : ILog, IToast {
     fun postParamRespJson(
         uri: String,
         paramsMap: HashMap<String, Any>,
-        responseListener: (JsonObject?) -> Unit
+        responseListener: (Result<JsonObject>?) -> Unit
     ) {
         RequestMgr.postParamRespJson(uri, paramsMap, responseListener)
     }
@@ -26,7 +26,7 @@ object ApiCall : ILog, IToast {
     fun postParamRespJArray(
         uri: String,
         paramsMap: HashMap<String, Any>,
-        responseListener: (JsonArray?) -> Unit
+        responseListener: (Result<JsonArray>?) -> Unit
     ) {
         RequestMgr.postParamRespJArray(uri, paramsMap, responseListener)
     }
@@ -34,7 +34,7 @@ object ApiCall : ILog, IToast {
     fun getJson(
         uri: String,
         paramsMap: HashMap<String, Any>? = null,
-        responseListener: (JsonObject?) -> Unit
+        responseListener: (Result<JsonObject>?) -> Unit
     ) {
         RequestMgr.getJson(uri, paramsMap, responseListener)
     }
@@ -42,7 +42,7 @@ object ApiCall : ILog, IToast {
     fun getJArray(
         uri: String,
         paramsMap: HashMap<String, Any>? = null,
-        responseListener: (JsonArray?) -> Unit
+        responseListener: (Result<JsonArray>?) -> Unit
     ) {
         RequestMgr.getJArray(uri, paramsMap, responseListener)
     }
@@ -50,7 +50,7 @@ object ApiCall : ILog, IToast {
     fun postParamRespString(
         uri: String,
         paramsMap: HashMap<String, Any>? = null,
-        responseListener: (String?) -> Unit
+        responseListener: (Result<String>?) -> Unit
     ) {
         RequestMgr.postParamRespString(uri, paramsMap, responseListener)
     }
@@ -58,7 +58,7 @@ object ApiCall : ILog, IToast {
     fun postJsonRespJson(
         uri: String,
         paramsJson: JsonObject,
-        responseListener: (JsonObject?) -> Unit
+        responseListener: (Result<JsonObject>?) -> Unit
     ) {
         RequestMgr.postJsonRespJson(uri, paramsJson, responseListener)
     }
@@ -66,7 +66,7 @@ object ApiCall : ILog, IToast {
     fun postJsonRespString(
         uri: String,
         paramsJson: JsonObject,
-        responseListener: (String?) -> Unit
+        responseListener: (Result<String>?) -> Unit
     ) {
         RequestMgr.postJsonRespString(uri, paramsJson, responseListener)
     }
@@ -74,7 +74,7 @@ object ApiCall : ILog, IToast {
     fun postJsonRespBool(
         uri: String,
         paramsJson: JsonObject,
-        responseListener: (Boolean?) -> Unit
+        responseListener: (Result<Boolean>?) -> Unit
     ) {
         RequestMgr.postJsonRespBool(uri, paramsJson, responseListener)
     }
