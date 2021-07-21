@@ -49,3 +49,13 @@ Step 3. Fix Duplicate class error
  
 	android.useAndroidX=true
 	android.enableJetifier=true
+	
+Step 4. ViewBinding enable
+
+	android {
+	...
+	
+		buildFeatures {
+        		viewBinding = true
+    	}
+	}
