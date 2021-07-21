@@ -16,7 +16,7 @@ Add it in your root build.gradle at the end of repositories:
 Step 2. Add the dependency
 
 	dependencies {
-	        implementation 'com.github.naimyag:naimdevkit:1.0.1'
+	        implementation 'com.github.naimyag:naimdevkit:1.0.13'
 		
 		//firebase
     	api platform('com.google.firebase:firebase-bom:26.5.0')
