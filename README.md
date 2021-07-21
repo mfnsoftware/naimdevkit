@@ -53,7 +53,9 @@ Step 3. Fix Duplicate class error
 Step 4. ViewBinding enable
 
 	android {
+	...
+	
 		buildFeatures {
         		viewBinding = true
-    		}
+    	}
 	}
