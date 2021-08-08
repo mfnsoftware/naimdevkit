@@ -8,12 +8,14 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.naimyag.androiddevkit.utils.ILog
 import com.naimyag.androiddevkit.utils.IToast
-import com.naimyag.androiddevkit.utils.ToastType
-import org.json.JSONArray
 import java.io.File
 
 @Keep
 object ApiCall : ILog, IToast {
+
+    fun setHeaders(headersMap: HashMap<String, String>?) {
+        RequestMgr.setHeaders(headersMap)
+    }
 
     fun postParamRespJson(
         uri: String,

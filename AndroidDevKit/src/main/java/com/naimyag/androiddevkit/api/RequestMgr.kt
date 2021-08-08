@@ -9,8 +9,7 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.observers.DisposableSingleObserver
 import io.reactivex.rxjava3.schedulers.Schedulers
 import io.reactivex.rxjava3.subscribers.DisposableSubscriber
-import okhttp3.MultipartBody
-import okhttp3.OkHttpClient
+import okhttp3.*
 import retrofit2.HttpException
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
@@ -21,9 +20,10 @@ import java.security.cert.X509Certificate
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
-import kotlin.collections.HashMap
 
-object RequestMgr : ILog {
+object RequestMgr : ILog, IHeader {
+
+    private var headersMap: HashMap<String, String>? = null
 
     private val disposable = CompositeDisposable()
 
@@ -31,7 +31,7 @@ object RequestMgr : ILog {
         .setLenient()
         .create()
 
-    private val api = Retrofit.Builder()
+    private var api = Retrofit.Builder()
         .baseUrl("https://google.com")
         .client(getUnsafeOkHttpClient())
         .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
@@ -39,6 +39,18 @@ object RequestMgr : ILog {
         .addConverterFactory(GsonConverterFactory.create(gson))
         .build()
         .create(IApis::class.java)
+
+    private fun reInitApi() {
+
+        api = Retrofit.Builder()
+            .baseUrl("https://google.com")
+            .client(getUnsafeOkHttpClient())
+            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
+            .create(IApis::class.java)
+    }
 
     internal fun postParamRespJson(
         uri: String,
@@ -354,12 +366,44 @@ object RequestMgr : ILog {
         val sslSocketFactory = sslContext.socketFactory
 
         return OkHttpClient.Builder()
+            .apply {
+                getHeaderInterceptor()?.let {
+                    addInterceptor(it)
+                }
+            }
             .sslSocketFactory(sslSocketFactory, trustAllCerts[0] as X509TrustManager)
             .hostnameVerifier { _, _ -> true }.build()
     }
 
+    private fun getHeaderInterceptor(): Interceptor? {
+        return if (getHeaders() != null)
+            Interceptor { chain ->
+                val request =
+                    chain.request().newBuilder()
+                        .apply {
+                            getHeaders()?.forEach { mHeader ->
+                                header(mHeader.key, mHeader.value)
+                            }
+                        }
+                        .build()
+                chain.proceed(request)
+            }
+        else {
+            null
+        }
+    }
+
     override fun getmSimpleName(): String {
         return javaClass.simpleName
+    }
+
+    override fun getHeaders(): HashMap<String, String>? {
+        return headersMap
+    }
+
+    override fun setHeaders(headersMap: HashMap<String, String>?) {
+        this.headersMap = headersMap
+        reInitApi()
     }
 
 
